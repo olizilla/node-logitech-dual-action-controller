@@ -1,0 +1,14 @@
+{
+         "one": { "block": 4, "bit": 16 },
+         "two": { "block": 4, "bit": 32 },
+       "three": { "block": 4, "bit": 64 },
+        "four": { "block": 4, "bit": 128 },
+        "five": { "block": 5, "bit": 1 },
+         "six": { "block": 5, "bit": 2 },
+       "seven": { "block": 5, "bit": 4 },
+       "eight": { "block": 5, "bit": 8 },
+        "nine": { "block": 5, "bit": 16 },
+         "ten": { "block": 5, "bit": 32 },
+   "leftstick": { "block": 5, "bit": 64 },
+  "rightstick": { "block": 5, "bit": 128 }
+}
