@@ -1,11 +1,9 @@
+var buttons = require('../buttons.json')
 var LogitechDualActionController = require('../index.js')
 
 var controller = new LogitechDualActionController()
 
-controller.on('ready', function(d){
-  console.log('got ready',d)
-})
-
-controller.on('data', function(d){
-  console.log('got data',d)
-})
+for (name in buttons) {
+  controller.on(name + ':press',   console.log)
+  controller.on(name + ':release', console.log)  
+}

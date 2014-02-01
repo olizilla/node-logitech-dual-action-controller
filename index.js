@@ -25,6 +25,8 @@ byte 4: dpad direciton and buttons 1,2,3,4
 byte 5: buttons 5,6,7,8,9,10,leftstick,rightstick
 byte 6: mode switch... flips the dpad and left analog stick. 4 is on, 5 is off.
 byte 7: nothing. Seems to always return 252.
+
+See: http://www.autohotkey.com/board/topic/64178-hid-template-and-example-for-logitech-dual-action/
 */
 
 var util = require('util')
@@ -61,7 +63,7 @@ module.exports = LogitechDualActionController
 // Read the byte Buffer from the device and translate it into somthing useful
 function interpretData (data) {
 
-  var info = {
+  var state = {
     buttons: readButtons(data),
     dpad: readDpad(data),
     leftx: data[0],
@@ -70,14 +72,23 @@ function interpretData (data) {
     righty: data[3],
   }
 
-  this.emit('data', info)
-  // TODO: store current state on instance and emit relevent change events
+  for (name in state.buttons) {
+    if (this[name] === state.buttons[name]) continue;
+    
+    this[name] = state.buttons[name]
+
+    var e = name + (state.buttons[name] ? ':press' : ':release')
+
+    this.emit(e, e)
+  }
+
+  this.emit('data', state)
 }
 
 // Figure out which buttons are pressed
 function readButtons(data) {
 
-  var res = []
+  var res = {}
 
   for (name in buttons) {
     var button = buttons[name]
@@ -86,7 +97,9 @@ function readButtons(data) {
 
     // apply the mask for each key and determine if it is pressed.
     if (block & bit){
-      res.push(name)
+      res[name] = 1
+    } else {
+      res[name] = 0
     }
   }
   
