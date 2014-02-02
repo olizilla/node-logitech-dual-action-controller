@@ -22,7 +22,7 @@ byte 1: left analog stick vertical
 byte 2: right analog stick horizontal
 byte 3: right analog stick vertical
 byte 4: dpad direciton and buttons 1,2,3,4
-byte 5: buttons 5,6,7,8,9,10,leftstick,rightstick
+byte 5: buttons 5,6,7,8,9,10,11,12
 byte 6: mode switch... flips the dpad and left analog stick. 4 is on, 5 is off.
 byte 7: nothing. Seems to always return 252.
 
@@ -44,45 +44,59 @@ function LogitechDualActionController() {
     this[button] = 0
   }
 
-  this.leftx = 0
-  this.lefty = 0
+  this.leftstick =  { x:0, y:0 }
+  this.rightstick = { x:0, y:0 }
 
-  this.rightx = 0
-  this.righty = 0
-
-  this.hid = getDevice(VENDOR_ID, PRODUCT_ID)
-  //TODO: Handle device not availble.
-
-  this.hid.on('data', interpretData.bind(this))
+  getDevice(VENDOR_ID, PRODUCT_ID, function(err, device){
+    if (err) return consle.error(err)
+    this.emit('ready')
+    device.on('data', interpretData.bind(this))
+  }.bind(this))
 }
 
 util.inherits(LogitechDualActionController, events.EventEmitter);
 
 module.exports = LogitechDualActionController 
 
+
 // Read the byte Buffer from the device and translate it into somthing useful
 function interpretData (data) {
 
-  var state = {
+  var info = {
     buttons: readButtons(data),
     dpad: readDpad(data),
-    leftx: data[0],
-    lefty: data[1],
-    rightx: data[2],
-    righty: data[3],
+    leftstick:  { x: data[0], y: data[1] },
+    rightstick: { x: data[2], y: data[3] }
   }
 
-  for (name in state.buttons) {
-    if (this[name] === state.buttons[name]) continue;
+  for (name in info.buttons) {
     
-    this[name] = state.buttons[name]
+    var state = info.buttons[name]
+    
+    if (this[name] === state) continue;
+    
+    this[name] = state
 
-    var e = name + (state.buttons[name] ? ':press' : ':release')
+    var evt = name + (state ? ':press' : ':release')
 
-    this.emit(e, e)
+    this.emit(evt, evt)
   }
 
-  this.emit('data', state)
+  function moved(a, b){ 
+    return a.x !== b.x || a.y !== b.y 
+  }
+
+  if (moved(this.leftstick, info.leftstick)) {
+    this.leftstick = info.leftstick
+    this.emit('left:move', info.leftstick)
+  }
+
+  if (moved(this.rightstick, info.rightstick)) {
+    this.rightstick = info.rightstick
+    this.emit('right:move', info.rightstick)
+  }
+
+  this.emit('data', info)
 }
 
 // Figure out which buttons are pressed
@@ -130,14 +144,19 @@ function formatByte (num) {
 }
 
 // Ask HID for access to the device
-function getDevice(vendorId, productId) {
-  var devices = hid.devices()
+function getDevice(vendorId, productId, cb) {
 
-  var deviceData = devices.filter(function(d){
+  var deviceData = hid.devices().filter(function(d){
     return (d.vendorId === vendorId && d.productId === productId)
   })[0]
+    
+  if (deviceData) {
+    return cb(null, new hid.HID(deviceData.path))
+  }
 
-  if (!deviceData) return console.error('No gamepad found', gamepad)
+  console.error('Please connect Logitech Dual Action Controller...')
 
-  return new hid.HID(deviceData.path)
+  setTimeout(function(){
+    getDevice(vendorId, productId, cb)
+  }, 1000)
 }
