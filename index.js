@@ -43,8 +43,8 @@ function LogitechDualActionController() {
   for (button in buttons) {
     this[button] = 0
   }
-
-  this.leftstick =  { x:0, y:0 }
+  this.dpad = []
+  this.leftstick  = { x:0, y:0 }
   this.rightstick = { x:0, y:0 }
 
   getDevice(VENDOR_ID, PRODUCT_ID, function(err, device){
@@ -65,20 +65,15 @@ function interpretData (data) {
   var info = {
     buttons: readButtons(data),
     dpad: readDpad(data),
-    leftstick:  { x: data[0], y: data[1] },
-    rightstick: { x: data[2], y: data[3] }
+    leftstick:  readStick(data[0],data[1]),
+    rightstick: readStick(data[2],data[3])
   }
 
-  for (name in info.buttons) {
-    
+  for (name in info.buttons) {   
     var state = info.buttons[name]
-    
     if (this[name] === state) continue;
-    
     this[name] = state
-
     var evt = name + (state ? ':press' : ':release')
-
     this.emit(evt, evt)
   }
 
@@ -96,6 +91,20 @@ function interpretData (data) {
     this.emit('right:move', info.rightstick)
   }
 
+  this.dpad.forEach(function(item){
+      if(info.dpad.indexOf(item) < 0){
+        this.emit(item + ":release", item + ":release")        
+      }
+  }.bind(this))
+
+  info.dpad.forEach(function(item){
+      if(this.dpad.indexOf(item) < 0){
+        this.emit(item + ":press", item + ":press")        
+      }
+  }.bind(this))
+
+  this.dpad = info.dpad
+
   this.emit('data', info)
 }
 
@@ -110,11 +119,7 @@ function readButtons(data) {
     var bit = button.bit
 
     // apply the mask for each key and determine if it is pressed.
-    if (block & bit){
-      res[name] = 1
-    } else {
-      res[name] = 0
-    }
+    res[name] = (block & bit) ? 1 : 0
   }
   
   return res
@@ -136,6 +141,22 @@ function readDpad (data) {
   var input = data[4] & 0x0F
 
   return dpadMap[input] || []
+}
+
+/*
+map raw input to:
+
+      100
+       |
+-100 - o - 100
+       |
+     -100
+*/     
+function readStick(rawX, rawY) {
+  return {
+    x: Math.round(((rawX - 128)/128) * 100),
+    y: Math.round(-((rawY - 128)/128) * 100)
+  }
 }
 
 // Helpful byte logging

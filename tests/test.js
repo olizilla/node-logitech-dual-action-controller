@@ -8,8 +8,13 @@ for (name in buttons) {
   controller.on(name + ':release', console.log)  
 }
 
-['ready','left:move', 'right:move'].forEach(function (evt) {
+['dup', 'dright', 'ddown', 'dleft'].forEach(function (name) {
+  controller.on(name + ':press',   console.log)
+  controller.on(name + ':release', console.log)
+});
+
+['ready', 'left:move', 'right:move'].forEach(function (evt) {
   controller.on(evt, function(data){
     console.log(evt, data)
   })
-})
+});
