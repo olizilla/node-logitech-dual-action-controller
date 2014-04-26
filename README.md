@@ -75,13 +75,13 @@ with a `data` parameter object like ` { x: 0, y: 0 }` representing the position 
 
 We get an 8 byte Buffer from each `data` event.
 
-byte 0: left analog stick horizontal  
-byte 1: left analog stick vertical
-byte 2: right analog stick horizontal
-byte 3: right analog stick vertical
-byte 4: dpad direciton and buttons 1,2,3,4
-byte 5: buttons 5,6,7,8,9,10,11,12
-byte 6: mode switch... flips the dpad and left analog stick. 4 is on, 5 is off.
-byte 7: nothing. Seems to always return 252.
+- byte 0: left analog stick horizontal  
+- byte 1: left analog stick vertical
+- byte 2: right analog stick horizontal
+- byte 3: right analog stick vertical
+- byte 4: dpad direction and buttons 1,2,3,4
+- byte 5: buttons 5,6,7,8,9,10,11,12
+- byte 6: mode switch... flips the dpad and left analog stick. 4 is on, 5 is off.
+- byte 7: nothing. Seems to always return 252.
 
 See: http://www.autohotkey.com/board/topic/64178-hid-template-and-example-for-logitech-dual-action/
