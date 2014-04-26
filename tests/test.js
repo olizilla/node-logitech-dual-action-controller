@@ -5,10 +5,10 @@ var controller = new LogitechDualActionController()
 
 for (name in buttons) {
   controller.on(name + ':press',   console.log)
-  controller.on(name + ':release', console.log)  
+  controller.on(name + ':release', console.log)
 }
 
-['dup', 'dright', 'ddown', 'dleft'].forEach(function (name) {
+['dup', 'dright', 'ddown', 'dleft', 'dcenter'].forEach(function (name) {
   controller.on(name + ':press',   console.log)
   controller.on(name + ':release', console.log)
 });

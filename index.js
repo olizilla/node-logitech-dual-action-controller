@@ -2,9 +2,9 @@
 Logitech Dual Action Controller
 ===============================
 
-HID info: 
+HID info:
 
-{ 
+{
   vendorId: 1133,
   productId: 49686,
   path: 'USB_046d_c216_14300000',
@@ -12,12 +12,12 @@ HID info:
   manufacturer: 'Logitech',
   product: 'Logitech Dual Action',
   release: 768,
-  interface: -1 
+  interface: -1
 }
 
 We get an 8 byte Buffer from each `data` event.
 
-byte 0: left analog stick horizontal  
+byte 0: left analog stick horizontal
 byte 1: left analog stick vertical
 byte 2: right analog stick horizontal
 byte 3: right analog stick vertical
@@ -56,7 +56,7 @@ function LogitechDualActionController() {
 
 util.inherits(LogitechDualActionController, events.EventEmitter);
 
-module.exports = LogitechDualActionController 
+module.exports = LogitechDualActionController
 
 
 // Read the byte Buffer from the device and translate it into somthing useful
@@ -69,7 +69,7 @@ function interpretData (data) {
     rightstick: readStick(data[2],data[3])
   }
 
-  for (name in info.buttons) {   
+  for (name in info.buttons) {
     var state = info.buttons[name]
     if (this[name] === state) continue;
     this[name] = state
@@ -77,8 +77,8 @@ function interpretData (data) {
     this.emit(evt, evt)
   }
 
-  function moved(a, b){ 
-    return a.x !== b.x || a.y !== b.y 
+  function moved(a, b){
+    return a.x !== b.x || a.y !== b.y
   }
 
   if (moved(this.leftstick, info.leftstick)) {
@@ -91,16 +91,18 @@ function interpretData (data) {
     this.emit('right:move', info.rightstick)
   }
 
+  // check if a dpad has been released
   this.dpad.forEach(function(item){
-      if(info.dpad.indexOf(item) < 0){
-        this.emit(item + ":release", item + ":release")        
-      }
+    if(info.dpad.indexOf(item) < 0){
+      this.emit(item + ":release", item + ":release")
+    }
   }.bind(this))
 
+  // check if a dpad has been pressed
   info.dpad.forEach(function(item){
-      if(this.dpad.indexOf(item) < 0){
-        this.emit(item + ":press", item + ":press")        
-      }
+    if(this.dpad.indexOf(item) < 0){
+      this.emit(item + ":press", item + ":press")
+    }
   }.bind(this))
 
   this.dpad = info.dpad
@@ -121,21 +123,22 @@ function readButtons(data) {
     // apply the mask for each key and determine if it is pressed.
     res[name] = (block & bit) ? 1 : 0
   }
-  
+
   return res
 }
 
 // Figure out where the dpad is pointing
 function readDpad (data) {
   var dpadMap = [
-    ['dup'], 
+    ['dup'],
     ['dup', 'dright'],
     ['dright'],
     ['ddown', 'dright'],
     ['ddown'],
     ['ddown', 'dleft'],
     ['dleft'],
-    ['dup', 'dleft']
+    ['dup', 'dleft'],
+    ['dcenter']
   ]
 
   var input = data[4] & 0x0F
@@ -151,7 +154,7 @@ map raw input to:
 -100 - o - 100
        |
      -100
-*/     
+*/
 function readStick(rawX, rawY) {
   return {
     x: Math.round(((rawX - 128)/128) * 100),
@@ -170,7 +173,7 @@ function getDevice(vendorId, productId, cb) {
   var deviceData = hid.devices().filter(function(d){
     return (d.vendorId === vendorId && d.productId === productId)
   })[0]
-    
+
   if (deviceData) {
     return cb(null, new hid.HID(deviceData.path))
   }

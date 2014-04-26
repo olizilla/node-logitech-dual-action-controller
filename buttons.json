@@ -1,14 +1,14 @@
 {
-         "one": { "block": 4, "bit": 16 },
-         "two": { "block": 4, "bit": 32 },
-       "three": { "block": 4, "bit": 64 },
-        "four": { "block": 4, "bit": 128 },
-        "five": { "block": 5, "bit": 1 },
-         "six": { "block": 5, "bit": 2 },
-       "seven": { "block": 5, "bit": 4 },
-       "eight": { "block": 5, "bit": 8 },
-        "nine": { "block": 5, "bit": 16 },
-         "ten": { "block": 5, "bit": 32 },
-      "eleven": { "block": 5, "bit": 64 },
-      "twelve": { "block": 5, "bit": 128 }
+  "1": { "block": 4, "bit": 16 },
+  "2": { "block": 4, "bit": 32 },
+  "3": { "block": 4, "bit": 64 },
+  "4": { "block": 4, "bit": 128 },
+  "5": { "block": 5, "bit": 1 },
+  "6": { "block": 5, "bit": 2 },
+  "7": { "block": 5, "bit": 4 },
+  "8": { "block": 5, "bit": 8 },
+  "9": { "block": 5, "bit": 16 },
+  "10": { "block": 5, "bit": 32 },
+  "11": { "block": 5, "bit": 64 },
+  "12": { "block": 5, "bit": 128 }
 }
