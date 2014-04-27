@@ -3,10 +3,12 @@
 Provides an EventEmitter with events for the buttons, dpad and analog sticks on
 the Logitech Dual Action Controller.
 
+Heavily inspired by andrew/node-xbox-controller
+
 ## Install
 
 ```shell
- npm install logitech-dual-action
+ npm install logitech-dual-action-controller
 ```
 
 ## Usage
@@ -34,8 +36,9 @@ The dual action has 12 numbered buttons, 1 to 12, a dpad and 2 analog sticks.
 
 There are `:press` and `:release` events for buttons `1` to `12` like so: `1:press` `1:release`
 
-There are `:press` and `:release` events for the dpad directions like so: `dup:press`
-There is also a `dcenter:press` event if you just want to know when they start
+There are `:press` and `:release` events for the dpad directions like so: `dup:press`, `dleft:release`.
+
+There is a `dcenter:press` event if you just want to know when they stop pressing the dpad.
 
 There are `left:move` and `right:move` events for the analog sticks,
 with a `data` parameter object like ` { x: 0, y: 0 }` representing the position of the stick from -100 to 100 with 0 at the center.
