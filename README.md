@@ -3,7 +3,7 @@
 Provides an EventEmitter with events for the buttons, dpad and analog sticks on
 the Logitech Dual Action Controller.
 
-Heavily inspired by andrew/node-xbox-controller
+Heavily inspired by [andrew/node-xbox-controller](https://github.com/andrew/node-xbox-controller)
 
 ## Install
 
@@ -34,31 +34,30 @@ controller.on('left:move', function (data) {
 
 The dual action has 12 numbered buttons, 1 to 12, a dpad and 2 analog sticks.
 
-There are `:press` and `:release` events for buttons `1` to `12` like so: `1:press` `1:release`
+**Buttons:** There are `:press` and `:release` events for buttons `1` to `12` like so: `1:press` `1:release`
 
-There are `:press` and `:release` events for the dpad directions like so: `dup:press`, `dleft:release`.
-
+**Dpad:** There are `:press` and `:release` events for the dpad directions like so: `dup:press`, `dleft:release`.
 There is a `dcenter:press` event if you just want to know when they stop pressing the dpad.
 
-There are `left:move` and `right:move` events for the analog sticks,
+**Analog sticks:** There are `left:move` and `right:move` events for the analog sticks,
 with a `data` parameter object like ` { x: 0, y: 0 }` representing the position of the stick from -100 to 100 with 0 at the center.
 
 ```
-      100
-       |
--100 - o - 100
-       |
-     -100
+        100
+         |
+  -100 - o - 100
+         |
+       -100
 ```
 
-| button    | events                      | type
-|--------------------------------------------------------------------------------
-| 1,2,3,4   | ['#:press', '#:release']    | arcade buttons (replace # with button number)
-| 5,6,7,8   | ['#:press', '#:release']    | shoulder button
-| 9,10      | ['#:press', '#:release']    | start(ish), select(ish)
-| 11,12     | ['#:press', '#:release']    | left stick press, right stick press
-| dpad      | ['dup,dright,ddown,dleft']  | dpad digital directions
-| sticks    | ['left:move', 'right:move'] | analog stick movement
+Source                 | Events                    | Description
+-----------------------|---------------------------|-----------------------------------------------
+1,2,3,4                | `#:press` `#:release`     | arcade buttons (replace # with button number)
+5,6,7,8                | `#:press` `#:release`     | shoulder button
+9,10                   | `#:press` `#:release`     | start(ish), select(ish)
+11,12                  | `#:press` `#:release`     | left stick press, right stick press
+dup,dright,ddown,dleft | `#:press` `#:release`     | dpad digital directions
+left,right             | `left:move`, `right:move` | analog stick movement with x,y position in data param
 
 
 ## HID info, for them experts.
