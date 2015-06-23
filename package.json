@@ -1,6 +1,6 @@
 {
   "name": "logitech-dual-action-controller",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Make a logitech gamepad do something useful",
   "repository" : {
     "type" : "git",
@@ -13,7 +13,7 @@
   "author": "olizilla <oli@zilla.org.uk>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "node-hid": "~0.3.1",
+    "node-hid": "~0.4.0",
     "pad": "0.0.4"
   }
 }
